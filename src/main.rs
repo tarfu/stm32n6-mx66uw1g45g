@@ -13,12 +13,12 @@ algorithm!(Algorithm, {
     device_type: DeviceType::ExtSpi,
     flash_address: 0x70000000,
     flash_size: 0x8000000,
-    page_size: 0x1000,
+    page_size: 0x10000,
     empty_value: 0xFF,
-    program_time_out: 10000,
+    program_time_out: 100000,
     erase_time_out: 300000,
     sectors: [{
-        size: 0x1000,
+        size: 0x10000,
         address: 0x0,
     }]
 });
@@ -92,8 +92,8 @@ impl FlashAlgorithm for Algorithm {
     fn erase_sector(&mut self, addr: u32) -> Result<(), ErrorCode> {
         let flash_addr = addr - FLASH_BASE;
         self.write_enable()?;
-        self.xspi.exec_command_with_addr(CMD_SECTOR_ERASE_4B, flash_addr)?;
-        // Sector erase: max 300ms. At ~30μs/poll, 500K iters ≈ 15s.
+        self.xspi.exec_command_with_addr(CMD_BLOCK_ERASE_64K_4B, flash_addr)?;
+        // 64KB block erase: max 2s typical. At ~30μs/poll, 500K iters ≈ 15s.
         self.wait_write_finish(500_000)
     }
 

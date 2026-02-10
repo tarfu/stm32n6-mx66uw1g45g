@@ -23,6 +23,7 @@ pub const CMD_RESET_ENABLE: u32 = 0x66;
 pub const CMD_RESET_MEMORY: u32 = 0x99;
 pub const CMD_PAGE_PROGRAM_4B: u32 = 0x12;
 pub const CMD_SECTOR_ERASE_4B: u32 = 0x21;
+pub const CMD_BLOCK_ERASE_64K_4B: u32 = 0xDC;
 pub const CMD_CHIP_ERASE: u32 = 0x60;
 pub const CMD_FAST_READ_4B: u32 = 0x0C;
 
