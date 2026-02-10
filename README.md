@@ -20,6 +20,14 @@ cargo run
 
 This builds the algorithm and runs the probe-rs flash test suite (sector erase, chip erase, page program, verify).
 
+## Usage
+
+After building, flash a binary to the external NOR flash with probe-rs:
+
+```
+probe-rs download --chip-description-path target/definition.yaml --chip STM32N657 STM32N6570-DK_OoB.hex --binary-format ihex
+```
+
 ## How it works
 
 The algorithm initialises the STM32N6 peripherals (clocks, power, GPIO, XSPIM, RISAF) and drives XSPI2 in indirect SPI mode for erase/program/read operations. On teardown (`Drop`) it switches XSPI2 back to memory-mapped mode so the debugger and application code can read flash at `0x70000000`.
