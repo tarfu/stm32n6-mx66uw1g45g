@@ -1,0 +1,130 @@
+name: stm32n6-mx66uw1g45g
+variants:
+  - name: STM32N645
+    cores:
+      - name: main
+        type: armv8m
+        core_access_options: !Arm
+          ap: !v1 1
+    memory_map:
+      - !Ram
+        name: AXISRAM1234
+        range:
+          start: 0x24000000
+          end: 0x243e0000
+        cores:
+          - main
+      - !Nvm
+        name: XSPI2NOR
+        range:
+          start: 0x70000000
+          end: 0x78000000
+        access:
+          boot: true
+        cores:
+          - main
+    flash_algorithms:
+      - stm32n6-mx66uw1g45g
+
+  - name: STM32N647
+    cores:
+      - name: main
+        type: armv8m
+        core_access_options: !Arm
+          ap: !v1 1
+    memory_map:
+      - !Ram
+        name: AXISRAM1234
+        range:
+          start: 0x24000000
+          end: 0x243e0000
+        cores:
+          - main
+      - !Nvm
+        name: XSPI2NOR
+        range:
+          start: 0x70000000
+          end: 0x78000000
+        access:
+          boot: true
+        cores:
+          - main
+    flash_algorithms:
+      - stm32n6-mx66uw1g45g
+
+  - name: STM32N655
+    cores:
+      - name: main
+        type: armv8m
+        core_access_options: !Arm
+          ap: !v1 1
+    memory_map:
+      - !Ram
+        name: AXISRAM1234
+        range:
+          start: 0x24000000
+          end: 0x243e0000
+        cores:
+          - main
+      - !Nvm
+        name: XSPI2NOR
+        range:
+          start: 0x70000000
+          end: 0x78000000
+        access:
+          boot: true
+        cores:
+          - main
+    flash_algorithms:
+      - stm32n6-mx66uw1g45g
+
+  - name: STM32N657
+    cores:
+      - name: main
+        type: armv8m
+        core_access_options: !Arm
+          ap: !v1 1
+    memory_map:
+      - !Ram
+        name: AXISRAM123456
+        range:
+          start: 0x24000000
+          end: 0x243c0000
+        cores:
+          - main
+      - !Nvm
+        name: XSPI2NOR
+        range:
+          start: 0x70000000
+          end: 0x78000000
+        access:
+          boot: true
+        cores:
+          - main
+    flash_algorithms:
+      - stm32n6-mx66uw1g45g
+
+flash_algorithms:
+  - name: stm32n6-mx66uw1g45g
+    description: MX66UW1G45G external flash for STM32N6
+    cores:
+      - main
+    default: true
+    instructions: ""
+    pc_init: 0x0
+    pc_uninit: 0x0
+    pc_program_page: 0x0
+    pc_erase_sector: 0x0
+    pc_erase_all: 0x0
+    data_section_offset: 0x0
+    flash_properties:
+      address_range:
+        start: 0x70000000
+        end: 0x78000000
+      page_size: 0x1000
+      erased_byte_value: 0xFF
+      program_page_timeout: 10000
+      erase_sector_timeout: 300000
+      sectors:
+        - size: 0x1000
+          address: 0x0

@@ -1,0 +1,18 @@
+[target.'cfg(all(target_arch = "arm", target_os = "none"))']
+rustflags = [
+  "-C",
+  "link-arg=--nmagic",
+  "-C",
+  "link-arg=-Tlink.x",
+  # Code-size optimizations.
+  "-C",
+  "llvm-args=--inline-threshold=5",
+  "-C",
+  "no-vectorize-loops",
+  "-C",
+  "force-frame-pointers=no",
+]
+runner = "target-gen test template.yaml target/definition.yaml --chip STM32N657"
+
+[build]
+target = "thumbv8m.main-none-eabihf"
