@@ -85,7 +85,7 @@ impl Xspi {
 
         // 5. DCR2: prescaler (separate write, triggers calibration)
         self.regs.dcr2().modify(|w| {
-            w.set_prescaler(7); // prescaler=7 → divide by 8: 64MHz/8 = 8MHz
+            w.set_prescaler(1); // prescaler=1 → divide by 2: 64MHz/2 = 32MHz
         });
         self.wait_not_busy()?;
 
