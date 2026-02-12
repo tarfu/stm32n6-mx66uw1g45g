@@ -2,9 +2,10 @@
 #![no_main]
 
 use flash_algorithm::*;
+use pac::xspi::vals::{
+    CcrAdmode, CcrAdsize, CcrDmode, CcrImode, Fmode, WccrAdmode, WccrAdsize, WccrDmode, WccrImode,
+};
 use stm32_metapac as pac;
-use pac::xspi::vals::{CcrAdmode, CcrAdsize, CcrDmode, CcrImode, Fmode,
-    WccrImode, WccrAdmode, WccrAdsize, WccrDmode};
 
 use stm32n6_mx66uw1g45g::*;
 
@@ -92,7 +93,8 @@ impl FlashAlgorithm for Algorithm {
     fn erase_sector(&mut self, addr: u32) -> Result<(), ErrorCode> {
         let flash_addr = addr - FLASH_BASE;
         self.write_enable()?;
-        self.xspi.exec_command_with_addr(CMD_BLOCK_ERASE_64K_4B, flash_addr)?;
+        self.xspi
+            .exec_command_with_addr(CMD_BLOCK_ERASE_64K_4B, flash_addr)?;
         // 64KB block erase: max 2s typical. At ~30μs/poll, 500K iters ≈ 15s.
         self.wait_write_finish(500_000)
     }
@@ -126,7 +128,11 @@ impl FlashAlgorithm for Algorithm {
         let mut offset = 0u32;
         while offset < size {
             let chunk = core::cmp::min(256, (size - offset) as usize);
-            if self.xspi.read_data(flash_addr + offset, &mut buf[..chunk]).is_err() {
+            if self
+                .xspi
+                .read_data(flash_addr + offset, &mut buf[..chunk])
+                .is_err()
+            {
                 return Err(address + offset);
             }
             for i in 0..chunk {
@@ -147,7 +153,11 @@ impl FlashAlgorithm for Algorithm {
         let mut offset = 0u32;
         while offset < size {
             let chunk = core::cmp::min(256, (size - offset) as usize);
-            if self.xspi.read_data(flash_addr + offset, &mut buf[..chunk]).is_err() {
+            if self
+                .xspi
+                .read_data(flash_addr + offset, &mut buf[..chunk])
+                .is_err()
+            {
                 return Err(ErrorCode::new(1).unwrap());
             }
             for i in 0..chunk {
@@ -189,7 +199,10 @@ impl Drop for Algorithm {
             w.set_dmode(WccrDmode::B_0X1);
         });
         self.xspi.regs.wtcr().write(|w| w.set_dcyc(0));
-        self.xspi.regs.wir().write(|w| w.set_instruction(CMD_PAGE_PROGRAM_4B));
+        self.xspi
+            .regs
+            .wir()
+            .write(|w| w.set_instruction(CMD_PAGE_PROGRAM_4B));
 
         // Configure read side using write (not modify) for clean register state
         self.xspi.regs.dlr().write(|w| w.set_dl(0));
@@ -210,7 +223,10 @@ impl Drop for Algorithm {
         });
 
         // IR: FAST_READ_4B instruction (0x0C)
-        self.xspi.regs.ir().write(|w| w.set_instruction(CMD_FAST_READ_4B));
+        self.xspi
+            .regs
+            .ir()
+            .write(|w| w.set_instruction(CMD_FAST_READ_4B));
 
         let _ = self.xspi.wait_not_busy();
 

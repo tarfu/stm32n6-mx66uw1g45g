@@ -1,83 +1,5 @@
 name: stm32n6-mx66uw1g45g
 variants:
-  - name: STM32N645
-    cores:
-      - name: main
-        type: armv8m
-        core_access_options: !Arm
-          ap: !v1 1
-    memory_map:
-      - !Ram
-        name: AXISRAM1234
-        range:
-          start: 0x24000000
-          end: 0x243e0000
-        cores:
-          - main
-      - !Nvm
-        name: XSPI2NOR
-        range:
-          start: 0x70000000
-          end: 0x78000000
-        access:
-          boot: true
-        cores:
-          - main
-    flash_algorithms:
-      - stm32n6-mx66uw1g45g
-
-  - name: STM32N647
-    cores:
-      - name: main
-        type: armv8m
-        core_access_options: !Arm
-          ap: !v1 1
-    memory_map:
-      - !Ram
-        name: AXISRAM1234
-        range:
-          start: 0x24000000
-          end: 0x243e0000
-        cores:
-          - main
-      - !Nvm
-        name: XSPI2NOR
-        range:
-          start: 0x70000000
-          end: 0x78000000
-        access:
-          boot: true
-        cores:
-          - main
-    flash_algorithms:
-      - stm32n6-mx66uw1g45g
-
-  - name: STM32N655
-    cores:
-      - name: main
-        type: armv8m
-        core_access_options: !Arm
-          ap: !v1 1
-    memory_map:
-      - !Ram
-        name: AXISRAM1234
-        range:
-          start: 0x24000000
-          end: 0x243e0000
-        cores:
-          - main
-      - !Nvm
-        name: XSPI2NOR
-        range:
-          start: 0x70000000
-          end: 0x78000000
-        access:
-          boot: true
-        cores:
-          - main
-    flash_algorithms:
-      - stm32n6-mx66uw1g45g
-
   - name: STM32N657
     cores:
       - name: main
@@ -86,12 +8,35 @@ variants:
           ap: !v1 1
     memory_map:
       - !Ram
+        name: ITCMRAM
+        range:
+          start: 0x00000000
+          end: 0x00040000
+        cores: [main]
+      - !Ram
+        name: DTCMRAM
+        range:
+          start: 0x20000000
+          end: 0x20040000
+        cores: [main]
+      - !Ram
         name: AXISRAM123456
         range:
           start: 0x24000000
           end: 0x243c0000
-        cores:
-          - main
+        cores: [main]
+      - !Ram
+        name: AHBSRAM12
+        range:
+          start: 0x28000000
+          end: 0x28008000
+        cores: [main]
+      - !Ram
+        name: AXISRAM123456_secure_alias
+        range:
+          start: 0x34000000
+          end: 0x343c0000
+        cores: [main]
       - !Nvm
         name: XSPI2NOR
         range:
@@ -99,14 +44,13 @@ variants:
           end: 0x78000000
         access:
           boot: true
-        cores:
-          - main
+        cores: [main]
     flash_algorithms:
       - stm32n6-mx66uw1g45g
 
 flash_algorithms:
   - name: stm32n6-mx66uw1g45g
-    description: MX66UW1G45G external flash for STM32N6
+    description: MX66UW1G45G external flash on XSPI2 for STM32N6 like on STM32N6570-DK
     cores:
       - main
     default: true

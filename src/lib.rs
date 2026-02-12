@@ -1,13 +1,13 @@
 #![no_std]
 
-use stm32_metapac as pac;
-use pac::gpio;
-use pac::xspi;
-use pac::rcc::vals::{Icsel, Xspisel};
-use pac::xspi::vals::{Cssel, CcrAdmode, CcrAdsize, CcrDmode, CcrImode, Fmode, Fthres, Mtyp};
-use pac::pwr::vals::{Vddio3sv, Vddio3vrsel};
-use pac::syscfg::vals::{Vddio3cccrCs, Vddio3cccrEn};
 use flash_algorithm::ErrorCode;
+use pac::gpio;
+use pac::pwr::vals::{Vddio3sv, Vddio3vrsel};
+use pac::rcc::vals::{Icsel, Xspisel};
+use pac::syscfg::vals::{Vddio3cccrCs, Vddio3cccrEn};
+use pac::xspi;
+use pac::xspi::vals::{CcrAdmode, CcrAdsize, CcrDmode, CcrImode, Cssel, Fmode, Fthres, Mtyp};
+use stm32_metapac as pac;
 
 // Flash memory address on STM32N6 (XSPI2 non-secure alias per STM32N6 header)
 pub const FLASH_BASE: u32 = 0x70000000;
@@ -38,7 +38,9 @@ impl Xspi {
     pub fn new() -> Self {
         // Use secure alias (0x5802_a000) instead of non-secure (0x4802_a000)
         // because XSPI2 is a secure peripheral and writes via non-secure alias fault
-        Self { regs: unsafe { xspi::Xspi::from_ptr(0x5802_a000 as *mut ()) } }
+        Self {
+            regs: unsafe { xspi::Xspi::from_ptr(0x5802_a000 as *mut ()) },
+        }
     }
 
     pub fn wait_not_busy(&self) -> Result<(), ErrorCode> {
@@ -66,9 +68,9 @@ impl Xspi {
 
         // 2. DCR1: device size, memory type, chip select high time
         self.regs.dcr1().modify(|w| {
-            w.set_devsize(26);                             // 2^27 = 128 MiB
-            w.set_mtyp(Mtyp::B_0X1);                      // Macronix
-            w.set_csht(xspi::vals::Csht::from_bits(1));   // 2 cycles
+            w.set_devsize(26); // 2^27 = 128 MiB
+            w.set_mtyp(Mtyp::B_0X1); // Macronix
+            w.set_csht(xspi::vals::Csht::from_bits(1)); // 2 cycles
         });
 
         // 3. DCR2: wrap size (separate write before prescaler)
@@ -79,7 +81,7 @@ impl Xspi {
         // 4. CR: FIFO threshold + CSSEL (select NCS1)
         self.regs.cr().modify(|w| {
             w.set_fthres(Fthres::from_bits(3)); // 4 bytes
-            w.set_cssel(Cssel::B_0X0);          // NCS1 (PN1) — B_0X0 = NCS1 active
+            w.set_cssel(Cssel::B_0X0); // NCS1 (PN1) — B_0X0 = NCS1 active
         });
 
         self.wait_not_busy()?;
@@ -230,7 +232,9 @@ impl Xspi {
             w.set_dmode(CcrDmode::B_0X1);
         });
         self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X1)); // Indirect read
-        self.regs.ir().write(|w| w.set_instruction(CMD_FAST_READ_4B));
+        self.regs
+            .ir()
+            .write(|w| w.set_instruction(CMD_FAST_READ_4B));
         self.regs.ar().write(|w| w.set_address(addr)); // Triggers transfer
 
         // Read data in 4-byte chunks (32-bit DR read pops up to 4 bytes from FIFO)
@@ -393,6 +397,6 @@ pub fn init_xspim() {
         w.set_muxen(false);
         w.set_req2ack_time(1);
         w.set_cssel_ovr_en(true);
-        w.set_cssel_ovr_o2(false);    // false=NCS1 for XSPI2 (PN1)
+        w.set_cssel_ovr_o2(false); // false=NCS1 for XSPI2 (PN1)
     });
 }

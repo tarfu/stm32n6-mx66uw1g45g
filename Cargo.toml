@@ -13,17 +13,19 @@ probe-only = []
 
 [dependencies]
 cortex-m = "0.7.6"
-flash-algorithm = { path = "/Users/tobias.breitwieser/tmp/probe-rs/flash-algorithm", features = ["erase-chip", "verify", "blank-check"] }
+flash-algorithm = { path = "/Users/tobias.breitwieser/tmp/probe-rs/flash-algorithm", features = [
+    "erase-chip",
+    "verify",
+    "blank-check",
+] }
 rtt-target = { version = "0.3", features = ["cortex-m"], optional = true }
-stm32-metapac = { path = "/Users/tobias.breitwieser/tmp/embassy-rs/stm32-data/build/stm32-metapac", features = ["stm32n657x0", "pac"] }
+stm32-metapac = { path = "/Users/tobias.breitwieser/tmp/embassy-rs/stm32-data/build/stm32-metapac", features = [
+    "stm32n657x0",
+    "pac",
+] }
 
 # this lets you use `cargo fix`!
 [lib]
-test = false
-bench = false
-
-[[bin]]
-name = "stm32n6-mx66uw1g45g"
 test = false
 bench = false
 
@@ -42,19 +44,4 @@ debug-assertions = false
 incremental = false
 lto = "fat"
 opt-level = 's'
-overflow-checks = false
-
-# do not optimize proc-macro crates = faster builds from scratch
-[profile.dev.build-override]
-codegen-units = 8
-debug = false
-debug-assertions = false
-opt-level = 0
-overflow-checks = false
-
-[profile.release.build-override]
-codegen-units = 8
-debug = false
-debug-assertions = false
-opt-level = 0
 overflow-checks = false
