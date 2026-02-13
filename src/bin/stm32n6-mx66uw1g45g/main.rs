@@ -48,13 +48,6 @@ impl Algorithm {
     fn write_enable(&self) -> Result<(), ErrorCode> {
         self.xspi.exec_command(CMD_WRITE_ENABLE)
     }
-
-    #[allow(dead_code)]
-    fn read_id(&self) -> Result<[u8; 3], ErrorCode> {
-        let mut buf = [0u8; 3];
-        self.xspi.read_reg(CMD_READ_ID, &mut buf)?;
-        Ok(buf)
-    }
 }
 
 impl FlashAlgorithm for Algorithm {
