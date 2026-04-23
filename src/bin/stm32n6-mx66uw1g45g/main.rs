@@ -9,17 +9,40 @@ use stm32_metapac as pac;
 
 use stm32n6_mx66uw1g45g::*;
 
+#[cfg(all(feature = "sector-4k", feature = "sector-64k"))]
+compile_error!("features `sector-4k` and `sector-64k` are mutually exclusive");
+
+#[cfg(not(any(feature = "sector-4k", feature = "sector-64k")))]
+compile_error!("one of `sector-4k` or `sector-64k` must be enabled");
+
+#[cfg(feature = "sector-64k")]
+const SECTOR_SIZE: u32 = 0x10000;
+#[cfg(feature = "sector-4k")]
+const SECTOR_SIZE: u32 = 0x1000;
+
+#[cfg(feature = "sector-64k")]
+const ERASE_CMD: u32 = CMD_BLOCK_ERASE_64K_4B;
+#[cfg(feature = "sector-4k")]
+const ERASE_CMD: u32 = CMD_SECTOR_ERASE_4B;
+
+// Polling iterations for erase completion. ~30 µs per poll.
+// 4 KiB: 400 ms max → 50k iters ≈ 1.5 s. 64 KiB: 2 s max → 500k iters ≈ 15 s.
+#[cfg(feature = "sector-64k")]
+const ERASE_MAX_ITERS: u32 = 500_000;
+#[cfg(feature = "sector-4k")]
+const ERASE_MAX_ITERS: u32 = 50_000;
+
 algorithm!(Algorithm, {
     device_name: "MX66UW1G45G",
     device_type: DeviceType::ExtSpi,
     flash_address: 0x70000000,
     flash_size: 0x8000000,
-    page_size: 0x10000,
+    page_size: SECTOR_SIZE,
     empty_value: 0xFF,
     program_time_out: 100000,
     erase_time_out: 300000,
     sectors: [{
-        size: 0x10000,
+        size: SECTOR_SIZE,
         address: 0x0,
     }]
 });
@@ -86,10 +109,8 @@ impl FlashAlgorithm for Algorithm {
     fn erase_sector(&mut self, addr: u32) -> Result<(), ErrorCode> {
         let flash_addr = addr - FLASH_BASE;
         self.write_enable()?;
-        self.xspi
-            .exec_command_with_addr(CMD_BLOCK_ERASE_64K_4B, flash_addr)?;
-        // 64KB block erase: max 2s typical. At ~30μs/poll, 500K iters ≈ 15s.
-        self.wait_write_finish(500_000)
+        self.xspi.exec_command_with_addr(ERASE_CMD, flash_addr)?;
+        self.wait_write_finish(ERASE_MAX_ITERS)
     }
 
     fn program_page(&mut self, addr: u32, data: &[u8]) -> Result<(), ErrorCode> {

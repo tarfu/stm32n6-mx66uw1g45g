@@ -7,8 +7,16 @@ The flash is connected via **XSPI2** (NCS1 / port PN1). This algorithm should al
 ## Building
 
 ```
-cargo build
+cargo build                                                  # 4 KiB sectors (default)
+cargo build --no-default-features --features sector-64k      # 64 KiB sectors
 ```
+
+### Erase sector size
+
+The flash supports both 4 KiB (`CMD 0x21`) and 64 KiB (`CMD 0xDC`) erase. Pick with the mutually-exclusive features:
+
+- **`sector-4k`** (default) — finest erase granularity. Partitions placed on 4 KiB boundaries never share an erase sector.
+- **`sector-64k`** — faster bulk erase (~2-3× per MiB) but coarser boundaries.
 
 ## Testing
 

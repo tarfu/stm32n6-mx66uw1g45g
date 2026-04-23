@@ -6,7 +6,12 @@ edition = "2024"
 [workspace]
 
 [features]
-default = []
+default = ["sector-4k"]
+# Use 4 KiB erase sectors (CMD 0x21). Finer granularity — partitions on 4 KiB
+# boundaries never share an erase sector, at the cost of ~2-3× slower per MiB.
+sector-4k = []
+# Use 64 KiB erase sectors (CMD 0xDC). Faster bulk erase.
+sector-64k = []
 
 [dependencies]
 cortex-m = "0.7.6"
