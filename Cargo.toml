@@ -1,25 +1,21 @@
 [package]
 name = "stm32n6-mx66uw1g45g"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
 
 [workspace]
 
 [features]
 default = []
-rtt = ["rtt-target"]
-# Minimal algorithm that returns immediately - for testing if algorithm can start executing
-probe-only = []
 
 [dependencies]
 cortex-m = "0.7.6"
-flash-algorithm = { path = "/Users/tobias.breitwieser/tmp/probe-rs/flash-algorithm", features = [
+flash-algorithm = { git = "https://github.com/probe-rs/flash-algorithm", version = "0.7", features = [
     "erase-chip",
     "verify",
     "blank-check",
 ] }
-rtt-target = { version = "0.3", features = ["cortex-m"], optional = true }
-stm32-metapac = { path = "/Users/tobias.breitwieser/tmp/embassy-rs/stm32-data/build/stm32-metapac", features = [
+stm32-metapac = { git = "https://github.com/embassy-rs/stm32-data-generated", version = "21", features = [
     "stm32n657x0",
     "pac",
 ] }

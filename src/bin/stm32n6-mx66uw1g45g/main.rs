@@ -182,14 +182,14 @@ impl Drop for Algorithm {
         });
 
         // Set FMODE=0x0 (indirect write) before configuring
-        self.xspi.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X0));
+        self.xspi.regs.cr().modify(|w| w.set_fmode(Fmode::B0x0));
 
         // Configure write side (WCCR/WTCR/WIR) matching embassy order
         self.xspi.regs.wccr().write(|w| {
-            w.set_imode(WccrImode::B_0X1);
-            w.set_admode(WccrAdmode::B_0X1);
-            w.set_adsize(WccrAdsize::B_0X3);
-            w.set_dmode(WccrDmode::B_0X1);
+            w.set_imode(WccrImode::B0x1);
+            w.set_admode(WccrAdmode::B0x1);
+            w.set_adsize(WccrAdsize::B0x3);
+            w.set_dmode(WccrDmode::B0x1);
         });
         self.xspi.regs.wtcr().write(|w| w.set_dcyc(0));
         self.xspi
@@ -209,10 +209,10 @@ impl Drop for Algorithm {
 
         // CCR: single-line SPI read with 4-byte address (clean write, all other bits zero)
         self.xspi.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X1);
-            w.set_adsize(CcrAdsize::B_0X3);
-            w.set_dmode(CcrDmode::B_0X1);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x1);
+            w.set_adsize(CcrAdsize::B0x3);
+            w.set_dmode(CcrDmode::B0x1);
         });
 
         // IR: FAST_READ_4B instruction (0x0C)
@@ -225,7 +225,7 @@ impl Drop for Algorithm {
 
         // Switch to memory-mapped mode
         self.xspi.regs.cr().modify(|w| {
-            w.set_fmode(Fmode::B_0X3);
+            w.set_fmode(Fmode::B0x3);
             w.set_tcen(false);
         });
     }

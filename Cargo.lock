@@ -42,6 +42,7 @@ dependencies = [
 [[package]]
 name = "flash-algorithm"
 version = "0.7.0"
+source = "git+https://github.com/probe-rs/flash-algorithm#8c5e35597d3aa2d321792c334fe247d79c5dd204"
 
 [[package]]
 name = "nb"
@@ -57,16 +58,6 @@ name = "nb"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "8d5439c4ad607c3c23abf66de8c8bf57ba8adcd1f129e699851a6e43935d339d"
-
-[[package]]
-name = "rtt-target"
-version = "0.3.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "065d6058bb1204f51a562a67209e1817cf714759d5cf845aa45c75fa7b0b9d9b"
-dependencies = [
- "cortex-m",
- "ufmt-write",
-]
 
 [[package]]
 name = "rustc_version"
@@ -94,7 +85,8 @@ checksum = "388a1df253eca08550bef6c72392cfe7c30914bf41df5269b68cbd6ff8f570a3"
 
 [[package]]
 name = "stm32-metapac"
-version = "19.0.0"
+version = "21.0.0"
+source = "git+https://github.com/embassy-rs/stm32-data-generated#f4a6d7f10ba1e2681ab8d004138c8d836a264d92"
 dependencies = [
  "cortex-m",
 ]
@@ -105,15 +97,8 @@ version = "0.1.0"
 dependencies = [
  "cortex-m",
  "flash-algorithm",
- "rtt-target",
  "stm32-metapac",
 ]
-
-[[package]]
-name = "ufmt-write"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e87a2ed6b42ec5e28cc3b94c09982969e9227600b2e3dcbc1db927a84c06bd69"
 
 [[package]]
 name = "vcell"

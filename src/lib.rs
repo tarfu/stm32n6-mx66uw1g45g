@@ -69,7 +69,7 @@ impl Xspi {
         // 2. DCR1: device size, memory type, chip select high time
         self.regs.dcr1().modify(|w| {
             w.set_devsize(26); // 2^27 = 128 MiB
-            w.set_mtyp(Mtyp::B_0X1); // Macronix
+            w.set_mtyp(Mtyp::B0x1); // Macronix
             w.set_csht(xspi::vals::Csht::from_bits(1)); // 2 cycles
         });
 
@@ -81,7 +81,7 @@ impl Xspi {
         // 4. CR: FIFO threshold + CSSEL (select NCS1)
         self.regs.cr().modify(|w| {
             w.set_fthres(Fthres::from_bits(3)); // 4 bytes
-            w.set_cssel(Cssel::B_0X0); // NCS1 (PN1) — B_0X0 = NCS1 active
+            w.set_cssel(Cssel::B0x0); // NCS1 (PN1) — B0x0 = NCS1 active
         });
 
         self.wait_not_busy()?;
@@ -121,9 +121,9 @@ impl Xspi {
         self.wait_not_busy()?;
         self.regs.fcr().write(|w| w.set_ctcf(true));
         self.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X0);
-            w.set_dmode(CcrDmode::B_0X0);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x0);
+            w.set_dmode(CcrDmode::B0x0);
         });
         self.regs.ir().write(|w| w.set_instruction(cmd));
         self.wait_tcf()
@@ -137,11 +137,11 @@ impl Xspi {
         });
         self.regs.dlr().write(|w| w.set_dl(buf.len() as u32 - 1));
         self.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X0);
-            w.set_dmode(CcrDmode::B_0X1);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x0);
+            w.set_dmode(CcrDmode::B0x1);
         });
-        self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X1));
+        self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x1));
         self.regs.ir().write(|w| w.set_instruction(cmd));
 
         for byte in buf.iter_mut() {
@@ -160,7 +160,7 @@ impl Xspi {
         }
 
         self.wait_tcf()?;
-        self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X0));
+        self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x0));
         Ok(())
     }
 
@@ -172,12 +172,12 @@ impl Xspi {
         });
         self.regs.dlr().write(|w| w.set_dl(data.len() as u32 - 1));
         self.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X1);
-            w.set_adsize(CcrAdsize::B_0X3);
-            w.set_dmode(CcrDmode::B_0X1);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x1);
+            w.set_adsize(CcrAdsize::B0x3);
+            w.set_dmode(CcrDmode::B0x1);
         });
-        self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X0));
+        self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x0));
         self.regs.ir().write(|w| w.set_instruction(cmd));
         self.regs.ar().write(|w| w.set_address(addr));
 
@@ -206,10 +206,10 @@ impl Xspi {
         self.wait_not_busy()?;
         self.regs.fcr().write(|w| w.set_ctcf(true));
         self.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X1);
-            w.set_adsize(CcrAdsize::B_0X3);
-            w.set_dmode(CcrDmode::B_0X0);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x1);
+            w.set_adsize(CcrAdsize::B0x3);
+            w.set_dmode(CcrDmode::B0x0);
         });
         self.regs.ir().write(|w| w.set_instruction(cmd));
         self.regs.ar().write(|w| w.set_address(addr));
@@ -226,12 +226,12 @@ impl Xspi {
         // TCR: 8 dummy cycles for FAST_READ_4B
         self.regs.tcr().modify(|w| w.set_dcyc(8));
         self.regs.ccr().write(|w| {
-            w.set_imode(CcrImode::B_0X1);
-            w.set_admode(CcrAdmode::B_0X1);
-            w.set_adsize(CcrAdsize::B_0X3);
-            w.set_dmode(CcrDmode::B_0X1);
+            w.set_imode(CcrImode::B0x1);
+            w.set_admode(CcrAdmode::B0x1);
+            w.set_adsize(CcrAdsize::B0x3);
+            w.set_dmode(CcrDmode::B0x1);
         });
-        self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X1)); // Indirect read
+        self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x1)); // Indirect read
         self.regs
             .ir()
             .write(|w| w.set_instruction(CMD_FAST_READ_4B));
@@ -251,7 +251,7 @@ impl Xspi {
                 cortex_m::asm::nop();
             }
             if !got_data {
-                self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X0));
+                self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x0));
                 return Err(ErrorCode::new(0x2006).unwrap());
             }
             let word = self.regs.dr().read().data();
@@ -263,7 +263,7 @@ impl Xspi {
         self.wait_tcf()?;
         // Reset TCR dummy cycles and FMODE
         self.regs.tcr().modify(|w| w.set_dcyc(0));
-        self.regs.cr().modify(|w| w.set_fmode(Fmode::B_0X0));
+        self.regs.cr().modify(|w| w.set_fmode(Fmode::B0x0));
         Ok(())
     }
 
@@ -309,14 +309,14 @@ pub fn init_clocks() {
 
     // 4. Configure IC4: source=PLL2 (bypass=HSI 64MHz), divider=1
     rcc.iccfgr(3).write(|w| {
-        w.set_icsel(Icsel::PLL2);
+        w.set_icsel(Icsel::Pll2);
         w.set_icint(pac::rcc::vals::Icint::from_bits(0));
     });
     rcc.divensr().modify(|w| w.set_ic4ens(true));
 
     // 5. Select IC4 as XSPI2 kernel clock source
     rcc.ccipr6().modify(|w| {
-        w.set_xspi2sel(Xspisel::IC4);
+        w.set_xspi2sel(Xspisel::Ic4);
     });
 }
 
@@ -324,9 +324,9 @@ pub fn init_power() {
     let pwr = pac::PWR;
     let _val = pwr.svmcr3().read();
     pwr.svmcr3().modify(|w| {
-        w.set_vddio3sv(Vddio3sv::B_0X1);
+        w.set_vddio3sv(Vddio3sv::B0x1);
         w.set_vddio3vmen(true);
-        w.set_vddio3vrsel(Vddio3vrsel::B_0X1);
+        w.set_vddio3vrsel(Vddio3vrsel::B0x1);
     });
 }
 
@@ -335,8 +335,8 @@ pub fn init_compensation_cells() {
     syscfg.vddio3cccr().write(|w| {
         w.set_ransrc(0x7);
         w.set_rapsrc(0x8);
-        w.set_en(Vddio3cccrEn::B_0X1);
-        w.set_cs(Vddio3cccrCs::B_0X1);
+        w.set_en(Vddio3cccrEn::B0x1);
+        w.set_cs(Vddio3cccrCs::B0x1);
     });
 }
 
@@ -347,13 +347,13 @@ pub fn init_gpio() {
 
     gpion.moder().modify(|w| {
         for &pin in xspi_pins {
-            w.set_moder(pin, gpio::vals::Moder::ALTERNATE);
+            w.set_moder(pin, gpio::vals::Moder::Alternate);
         }
     });
 
     gpion.ospeedr().modify(|w| {
         for &pin in xspi_pins {
-            w.set_ospeedr(pin, gpio::vals::Ospeedr::VERY_HIGH_SPEED);
+            w.set_ospeedr(pin, gpio::vals::Ospeedr::VeryHighSpeed);
         }
     });
 
@@ -369,7 +369,7 @@ pub fn init_gpio() {
     });
 
     gpion.pupdr().modify(|w| {
-        w.set_pupdr(1, gpio::vals::Pupdr::PULL_UP);
+        w.set_pupdr(1, gpio::vals::Pupdr::PullUp);
     });
 }
 
