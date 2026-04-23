@@ -20,6 +20,16 @@ cargo run
 
 This builds the algorithm and runs the probe-rs flash test suite (sector erase, chip erase, page program, verify).
 
+### probe-rs version requirement
+
+Needs **probe-rs ≥ 0.32** (unreleased at the time of writing). The STM32N6 reset-sequence fix (probe-rs PR #3843) landed after the 0.31.0 release; without it `target-gen test` hardfaults during flash-algorithm init with `The core entered an unexpected status: LockedUp`.
+
+Until 0.32 ships, install `probe-rs` and `target-gen` from master:
+
+```
+cargo install --git https://github.com/probe-rs/probe-rs probe-rs-tools target-gen --locked
+```
+
 ## Usage
 
 After building, flash a binary to the external NOR flash with probe-rs:
